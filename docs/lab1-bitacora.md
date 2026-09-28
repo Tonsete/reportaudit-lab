@@ -43,12 +43,12 @@ llegues a la parte correspondiente.
 
 | Hallazgo | Manual (B) | SonarQube for IDE sin conexión (D) | SonarQube for IDE en Connected Mode (E) | SonarQube Cloud (F) | CodeQL (F) | Semgrep (G) | Trivy (K) |
 |---|---|---|---|---|---|---|---|
-| H1 Inyección SQL en `buscar_reportes_cliente` | ✓ yo lo vi por el apóstrofo | pendiente | pendiente | pendiente | pendiente | pendiente (con p/python a veces lo pasa por alto si la query va en variable) | n/a |
-| H2 Inyección de comandos en `convertir_a_pdf` | ✓ por el `os.system` con `+` | pendiente | pendiente | pendiente | pendiente | pendiente | n/a |
-| H3 Deserialización YAML insegura en `cargar_configuracion` | ✓ `yaml.load` con `Loader` | pendiente | pendiente | pendiente | pendiente | ✓ `python.lang.security.deserialization.avoid-pyyaml-load` | n/a |
-| H4 Hash MD5 en `hash_password_legacy` | ✓ `hashlib.md5` pelado | pendiente | pendiente | pendiente | pendiente | ✓ `insecure-hash-algorithm-md5` + `md5-used-as-password` | n/a |
-| H5 Clave de API escrita en el código | ✓ línea 21 | pendiente | pendiente | pendiente | pendiente | ✓ `p/secrets` | ✓ Trivy secret |
-| H6 Contraseña SMTP escrita en el código | ✓ línea 22 | pendiente | pendiente | pendiente | pendiente | ✓ `p/secrets` | ✓ Trivy secret |
+| H1 Inyección SQL en `buscar_reportes_cliente` | ✓ yo lo vi por el apóstrofo | pendiente (lo miro en VS Code) | pendiente | pendiente | pendiente | ✗ con p/python no la ve porque la query va en variable antes del execute (3 hallazgos en total) | n/a |
+| H2 Inyección de comandos en `convertir_a_pdf` | ✓ por el `os.system` con `+` | pendiente | pendiente | pendiente | pendiente | ✗ no la marca con p/python+p/secrets | n/a |
+| H3 Deserialización YAML insegura en `cargar_configuracion` | ✓ `yaml.load` con `Loader` | pendiente | pendiente | pendiente | pendiente | ✓ `python.lang.security.deserialization.avoid-pyyaml-load` (línea 33) | n/a |
+| H4 Hash MD5 en `hash_password_legacy` | ✓ `hashlib.md5` pelado | pendiente | pendiente | pendiente | pendiente | ✓ `insecure-hash-algorithm-md5` + `md5-used-as-password` (línea 57, cuenta como 2 reglas pero es 1 fallo) | n/a |
+| H5 Clave de API escrita en el código | ✓ línea 21 | pendiente | pendiente | pendiente | pendiente | ✗ p/secrets no la canta (es genérica, no parece AWS) | ✗ Trivy secret no la ve, solo mira dependencias aquí |
+| H6 Contraseña SMTP escrita en el código | ✓ línea 22 | pendiente | pendiente | pendiente | pendiente | ✗ igual que H5 | ✗ igual |
 
 **Conclusión de la matriz** (Parte K): ¿alguna herramienta lo detectó todo? ¿Qué
 te dice eso sobre depender de una sola herramienta?
@@ -62,9 +62,9 @@ De momento, con lo que llevo, ninguna lo pilla todo sola. Yo a mano pillé los 6
 | Dato | Valor |
 |---|---|
 | Dependencias directas (`requirements.in`) | 2 (flask==3.0.0, pyyaml==6.0.3) |
-| Componentes Python en el SBOM | pendiente (lo saco con Syft en `docs/evidencias/sbom.spdx.json`) |
-| Otros componentes que aparezcan en el SBOM (si los hay) y de dónde salen | pendiente |
-| Formato y versión de especificación del SBOM (`bomFormat`, `specVersion`) | CycloneDX o SPDX según lo que me pida Syft, lo anoto cuando lo genere |
+| Componentes Python en el SBOM | 8 en `requirements.txt` (flask, werkzeug, jinja2, itsdangerous, click, markupsafe, blinker, pyyaml) + colorama de Windows. Lo generé con `syft scan requirements.txt` en `docs/evidencias/sbom.spdx.json` |
+| Otros componentes que aparezcan en el SBOM (si los hay) y de dónde salen | Si escaneo `dir:.` salen 1000+ porque pilla el venv y tools, por eso lo hago sobre `requirements.txt` que es lo que va a prod |
+| Formato y versión de especificación del SBOM (`bomFormat`, `specVersion`) | SPDX 2.3 (`sbom.spdx.json`) y CycloneDX 1.7 (`sbom.cyclonedx.json`) |
 
 ---
 
@@ -72,7 +72,9 @@ De momento, con lo que llevo, ninguna lo pilla todo sola. Yo a mano pillé los 6
 
 | Paquete | Versión | ¿Directa o transitiva? (usa `# via`) | CVE / GHSA | Severidad | Corregida en | ¿Explotable en ReportAudit? ¿Por qué? | Decisión |
 |---|---|---|---|---|---|---|---|
-| pendiente (lo relleno cuando corra Grype + Trivy) |  |  |  |  |  |  |  |
+| werkzeug | 3.0.1 | transitiva (`# via flask`) | GHSA-2g68-c3qc-8985 y otras 5 | High (1) + Medium (5) | 3.1.x | Sí, Flask la usa para todo el HTTP, así que el parser multipart y el debugger nos afectan | actualizar con Dependabot |
+| jinja2 | 3.1.2 | transitiva (`# via flask`) | GHSA-h75v-3vvj-5mfj y otras 4 | Medium (5) | 3.1.6 | Sí, Flask renderiza con Jinja, los escapes del sandbox son explotables | actualizar |
+| flask | 3.0.0 | directa | GHSA-68rp-wp8r-4726 | Low | 3.1.x | Poco, es lo del `Vary: Cookie`, pero igual se actualiza | actualizar |
 
 **Comparación con Dependabot** (Parte H): ¿las alertas coinciden con Grype? Explica
 cualquier diferencia.
