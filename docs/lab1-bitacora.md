@@ -93,12 +93,14 @@ Hecho: `docs/evidencias/reportaudit.openvex.json` con 2 statements en `fixed` (W
 
 | Medida | Antes | Después |
 |---|---|---|
-| Hallazgos de Semgrep en `app/` | 3 (yaml + 2 de md5) en `docs/evidencias/semgrep.json` del PR anterior | 0, lo acabo de correr y sale limpio |
-| Alertas abiertas de CodeQL (Security → Code scanning) | pendiente (lo miro cuando corra el PR fix) | objetivo 0 |
-| Vulnerabilidades en SonarQube Cloud (rama main) | pendiente | objetivo 0 |
-| Security Hotspots por revisar en SonarQube Cloud | pendiente | objetivo 0 |
-| Vulnerabilidades de Grype sobre el SBOM | 12 (6 Werkzeug + 5 Jinja2 + 1 Flask) | 0 con Flask 3.1.3 + Werkzeug 3.1.9 + Jinja2 3.1.6 |
-| Alertas abiertas de Dependabot | pendiente | objetivo 0, con el update ya no debería abrir nada |
+| Hallazgos de Semgrep en `app/` | 3 (yaml + 2 de md5) en `docs/evidencias/semgrep.json` del PR anterior | 0, lo acabo de correr y sale limpio. El pre-commit antes bloqueaba y ahora da Passed |
+| Alertas abiertas de CodeQL (Security → Code scanning) | 4 en main (SQLi, command injection, MD5 y log de secretos) | Los jobs SAST-CodeQL del pipeline pasan. Queda 1 aviso nuevo de la decoración que es conservador (marca el subprocess aunque ya valido con basename), lo dejo documentado |
+| Vulnerabilidades en SonarQube Cloud (rama main) | varias en el primer análisis | Los jobs SAST-Sonar pasan. El Quality Gate de la decoración pide 80% coverage, que sin tests en Lab 1 no hay (eso viene en Tema 3) |
+| Security Hotspots por revisar en SonarQube Cloud | pendientes de revisar | revisados en el PR fix |
+| Vulnerabilidades de Grype sobre el SBOM | 12 (6 Werkzeug + 5 Jinja2 + 1 Flask) | 0 con Flask 3.1.3 + Werkzeug 3.1.9 + Jinja2 3.1.6 + click 8.2.1 |
+| Alertas abiertas de Dependabot | 0 de pip (ya voy al día), 2 de actions que ya fusioné (checkout 6->7, sonar 7->8) | 0 abiertas ahora mismo |
+
+Protección de main: exige PR + los 2 checks `SAST - SonarQube Cloud` y `SAST - CodeQL`. La puse con API y ya no deja pushear directo. Me falta añadir al compi como reviewer cuando me pase su usuario.
 
 ---
 
