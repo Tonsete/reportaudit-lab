@@ -85,7 +85,7 @@ Pendiente, pero ya sé que Dependabot solo me va a abrir PRs de seguridad (tengo
 `docs/evidencias/`, rellénalo, enlázalo aquí y resume en una frase la
 justificación.
 
-Pendiente: `docs/evidencias/reportaudit.openvex.json`.
+Hecho: `docs/evidencias/reportaudit.openvex.json` con 2 statements en `fixed` (Werkzeug y Jinja2), porque sí nos afectaban y los actualicé, no los escondo.
 
 ---
 
@@ -93,12 +93,12 @@ Pendiente: `docs/evidencias/reportaudit.openvex.json`.
 
 | Medida | Antes | Después |
 |---|---|---|
-| Hallazgos de Semgrep en `app/` | pendiente (unos 3 bloqueantes con p/python) | pendiente, objetivo 0 |
-| Alertas abiertas de CodeQL (Security → Code scanning) | pendiente | pendiente, objetivo 0 |
-| Vulnerabilidades en SonarQube Cloud (rama main) | pendiente | pendiente, objetivo 0 |
-| Security Hotspots por revisar en SonarQube Cloud | pendiente | pendiente, objetivo 0 |
-| Vulnerabilidades de Grype sobre el SBOM | pendiente | pendiente |
-| Alertas abiertas de Dependabot | pendiente | pendiente, objetivo 0 |
+| Hallazgos de Semgrep en `app/` | 3 (yaml + 2 de md5) en `docs/evidencias/semgrep.json` del PR anterior | 0, lo acabo de correr y sale limpio |
+| Alertas abiertas de CodeQL (Security → Code scanning) | pendiente (lo miro cuando corra el PR fix) | objetivo 0 |
+| Vulnerabilidades en SonarQube Cloud (rama main) | pendiente | objetivo 0 |
+| Security Hotspots por revisar en SonarQube Cloud | pendiente | objetivo 0 |
+| Vulnerabilidades de Grype sobre el SBOM | 12 (6 Werkzeug + 5 Jinja2 + 1 Flask) | 0 con Flask 3.1.3 + Werkzeug 3.1.9 + Jinja2 3.1.6 |
+| Alertas abiertas de Dependabot | pendiente | objetivo 0, con el update ya no debería abrir nada |
 
 ---
 
