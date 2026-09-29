@@ -1,16 +1,21 @@
 {
   "@context": "https://openvex.dev/ns/v0.2.0",
-  "@id": "https://github.com/TU-USUARIO/reportaudit-lab/vex/2026-001",
-  "author": "Nombre Apellido <tu-correo@ejemplo.com>",
-  "timestamp": "2026-10-01T10:00:00Z",
+  "@id": "https://github.com/Tonsete/reportaudit-lab/vex/2026-001",
+  "author": "Antonio García Gallego <aagarciagallego2005@gmail.com>",
+  "timestamp": "2026-09-29T08:55:00Z",
   "version": 1,
   "statements": [
     {
-      "vulnerability": { "name": "CVE-XXXX-XXXXX" },
-      "products": [ { "@id": "pkg:pypi/paquete@version" } ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_in_execute_path",
-      "impact_statement": "Explica aquí, con evidencia del código, por qué la vulnerabilidad no es explotable en ReportAudit."
+      "vulnerability": { "name": "GHSA-2g68-c3qc-8985" },
+      "products": [{ "@id": "pkg:pypi/werkzeug@3.0.1" }],
+      "status": "fixed",
+      "impact_statement": "Estaba en Werkzeug 3.0.1 transitiva de Flask. Lo actualicé a 3.1.9 en el PR de auditoría y Grype ya da 0. No lo dejo como not_affected porque sí nos afectaba (Flask usa ese parser)."
+    },
+    {
+      "vulnerability": { "name": "GHSA-h75v-3vvj-5mfj" },
+      "products": [{ "@id": "pkg:pypi/jinja2@3.1.2" }],
+      "status": "fixed",
+      "impact_statement": "Era del sandbox de Jinja 3.1.2. Subido a 3.1.6, verificado con Grype y Trivy en docs/evidencias/grype.json."
     }
   ]
 }
