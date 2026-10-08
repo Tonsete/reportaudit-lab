@@ -17,7 +17,8 @@ compromised for the two practice credentials and must not be deployed.
 the repository's private vulnerability reporting channel:
 
 1. Open the repository page on GitHub.
-2. Go to the **Security** tab → **Advisories** → **Report a vulnerability**.
+2. Go to the **Security** tab → **Advisories** → **Report a vulnerability**
+   (direct link: https://github.com/Tonsete/reportaudit-lab/security/advisories/new).
 3. Describe the affected version, the steps to reproduce in general terms
    and your contact address.
 
