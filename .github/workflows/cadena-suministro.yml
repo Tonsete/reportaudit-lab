@@ -49,3 +49,36 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: "/language:python"
+
+  pip-audit:
+    name: SCA - pip-audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      - name: Preparar Python
+        uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Auditar dependencias con pip-audit
+        run: |
+          python -m pip install pip-audit
+          pip-audit -r requirements.txt --desc
+
+  gitleaks:
+    name: Secrets - Gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      - name: Instalar Gitleaks verificado
+        run: python scripts/instalar_herramientas.py gitleaks
+
+      - name: Buscar secretos en el árbol con las reglas de ReportAudit
+        # Se escanea el árbol (no el historial): el historial contiene a
+        # propósito las 2 credenciales ya rotadas (ver Parte O) y ese
+        # hallazgo histórico queda registrado como baseline, no como puerta.
+        run: ./tools/gitleaks detect --source . --config gitleaks.toml --verbose --no-git
