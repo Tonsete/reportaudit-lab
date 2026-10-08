@@ -115,6 +115,15 @@ Instalé Gitleaks 8.30.1 en `tools/` con versión fija y SHA-256 verificado (has
 
 ---
 
+## Parte P — Puertas obligatorias de SCA y secretos
+
+Añadí 2 jobs al pipeline (`SCA - pip-audit` con `pip-audit -r requirements.txt` y `Secrets - Gitleaks` con `gitleaks.toml` sobre el árbol). El de secretos mira el árbol y no el historial a propósito: el historial guarda las 2 credenciales rotadas como baseline de la Parte O, la puerta vigila que no entre ninguna nueva.
+
+- Push protection: activado en Settings → Code security. Lo probé en una rama de usar y tirar con un fake: el push quedó bloqueado antes de subir nada y borré la rama sin PR.
+- Protección de `main`: exige los 4 checks (`SAST - SonarQube Cloud`, `SAST - CodeQL`, `SCA - pip-audit`, `Secrets - Gitleaks`). Nada entra sin las 4 puertas en verde.
+
+---
+
 ## Preguntas de comprobación (Sección 7 de la guía)
 
 1. pendiente
