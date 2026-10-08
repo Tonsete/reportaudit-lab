@@ -124,6 +124,15 @@ Añadí 2 jobs al pipeline (`SCA - pip-audit` con `pip-audit -r requirements.txt
 
 ---
 
+## Parte Q — Política de seguridad y canal privado
+
+Escribí `SECURITY.md` en la raíz: solo 1.0.x con soporte, reporte siempre por el canal privado (nunca Issue público con el exploit) y primera respuesta en 5 días laborables.
+
+- Canal privado: activado en Settings → Code security (private vulnerability reporting).
+- Simulacro Q.3: abrí un aviso privado de prueba en borrador y recorrí el flujo de divulgación coordinada sin publicar nada sensible.
+
+---
+
 ## Preguntas de comprobación (Sección 7 de la guía)
 
 1. pendiente
