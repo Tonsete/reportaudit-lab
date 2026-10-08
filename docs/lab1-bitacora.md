@@ -104,6 +104,17 @@ Protección de main: exige PR + los 2 checks `SAST - SonarQube Cloud` y `SAST - 
 
 ---
 
+## Parte O — Gitleaks: el historial no olvida
+
+Instalé Gitleaks 8.30.1 en `tools/` con versión fija y SHA-256 verificado (hash publicado y calculado idénticos, si no no se instala).
+
+- Árbol actual (`--no-git`): 0 leaks. El grep a los valores viejos en `app/ docs/ .github/ plantillas/ scripts/` no devuelve nada: en el código ya están a `os.getenv`.
+- Historial (`--log-opts="--all"`, 9 commits): 2 leaks, los 2 en el commit base `dae7e25` en `app/reporte_auditoria.py:21-22` (la API key con regla `generic-api-key` y el SMTP solo con mi regla propia, las genéricas no lo veían por corto y poco entrópico).
+- Regla propia en `gitleaks.toml` (`reportaudit-notification-api-key` y `reportaudit-smtp-password`, extiende las por defecto). Evidencias en `docs/evidencias/gitleaks-arbol.json` (vacío) y `gitleaks-historial.json` (2 hallazgos).
+- Baseline: las 2 credenciales se dan por comprometidas y rotadas (borrar no basta, siguen en el historial); quedan registradas aquí y en el VEX como `fixed`, no se silencian.
+
+---
+
 ## Preguntas de comprobación (Sección 7 de la guía)
 
 1. pendiente

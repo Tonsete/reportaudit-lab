@@ -1,0 +1,21 @@
+# Reglas propias de ReportAudit para Gitleaks (Parte O).
+# Extienden las reglas por defecto: lo que ya detecta generic-api-key
+# sigue detectándose, y añadimos lo que se le escapa (el SMTP de práctica,
+# que al ser corto y poco entrópico no lo marca ninguna regla genérica).
+
+[extend]
+useDefault = true
+
+# La API key hardcodeada tal como venía heredada (ya rotada, ver baseline).
+[[rules]]
+id = "reportaudit-notification-api-key"
+description = "Hardcoded ReportAudit notification API key"
+regex = '''NOTIFICATION_API_KEY\s*=\s*["'][^"']{8,}["']'''
+tags = ["reportaudit", "secret"]
+
+# La contraseña SMTP hardcodeada tal como venía heredada (ya rotada).
+[[rules]]
+id = "reportaudit-smtp-password"
+description = "Hardcoded ReportAudit SMTP password"
+regex = '''SMTP_PASSWORD\s*=\s*["'][^"']{4,}["']'''
+tags = ["reportaudit", "secret"]
