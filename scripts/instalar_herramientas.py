@@ -67,7 +67,11 @@ def detectar_plataforma():
 def nombre_del_archivo(herramienta, version, sistema, arquitectura):
     """Construye el nombre exacto del archivo publicado en GitHub Releases."""
     extension = "zip" if sistema == "windows" else "tar.gz"
-    if herramienta in ("syft", "grype", "gitleaks"):
+    if herramienta == "gitleaks":
+        # Gitleaks nombra la arquitectura x86_64 como x64, no amd64
+        arq_gitleaks = {"amd64": "x64", "arm64": "arm64"}[arquitectura]
+        return f"{herramienta}_{version}_{sistema}_{arq_gitleaks}.{extension}"
+    if herramienta in ("syft", "grype"):
         if herramienta == "grype" and sistema == "windows" and arquitectura == "arm64":
             raise SystemExit("Grype no publica binario para Windows ARM64: usa WSL2 o GitHub Codespaces.")
         return f"{herramienta}_{version}_{sistema}_{arquitectura}.{extension}"
