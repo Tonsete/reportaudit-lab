@@ -8,16 +8,18 @@ on:
   push:
     tags: ["v*"]
 
-# Mínimo privilegio + lo justo para publicar y firmar.
+# Mínimo privilegio: lectura por defecto; la escritura solo donde se publica.
 permissions:
-  contents: write
-  id-token: write
-  attestations: write
+  contents: read
 
 jobs:
   publicar:
     name: Release con SBOM y procedencia firmada
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     steps:
       - name: Descargar el código de la etiqueta
         uses: actions/checkout@v7

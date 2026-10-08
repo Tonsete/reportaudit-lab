@@ -142,6 +142,26 @@ El workflow `publicar-version.yml` se dispara al empujar una etiqueta `v*`: inst
 
 ---
 
+## Parte S — Scorecard: leer con criterio
+
+Workflow `scorecard.yml` corriendo en `main` y semanal, nota global **4.5**. Lo que dice y mi lectura:
+
+- 10 en Dependabot, CI-Tests (11/11 PRs con CI), Vulnerabilities (0 abiertas), Binary-Artifacts y Dangerous-Workflow: lo estructural está bien.
+- SAST 9: CodeQL detectado corriendo en 24/26 commits (los 2 sin él son anteriores al pipeline).
+- Security-Policy 4: detecta `SECURITY.md` pero pedía un enlace de reporte; añadí el enlace directo a advisories en esta rama.
+- Token-Permissions 0: era por el `contents: write` global de `publicar-version.yml`; lo bajé a nivel de job en esta rama.
+- Pinned-Dependencies 0: fijamos por tag, no por hash (reto élite opcional S.3); aceptado porque Dependabot vigila las actions.
+- Signed-Releases 0: mira firmas clásicas; nuestra procedencia Sigstore/SLSA verifica con `gh attestation verify` (exit 0, ver Parte R).
+- License 0 (sin LICENSE, fuera del alcance), Fuzzing/CII/Contributors/Packaging/Maintained 0 (no aplicables a un trabajo de curso de 90 días), Branch-Protection sin dato (el token del check no lee reglas clásicas; la protección existe y se ve en Settings).
+
+---
+
+## Parte T — Expediente y entrega
+
+Expediente en `docs/expediente-evidencias.md`: cada fila enlaza a PR, check, archivo de `docs/evidencias/`, release o advisory. Checklist de la sección 8 repasado: repo público en verde, PRs con plantilla internacional y `Closes/Refs`, `main` con 4 checks + conversaciones resueltas, secret scanning y push protection activados, release v1.0.0 verificada y Scorecard publicado.
+
+---
+
 ## Preguntas de comprobación (Sección 7 de la guía)
 
 1. pendiente

@@ -1,0 +1,16 @@
+Verificacion cliente de ReportAudit v1.0.0 (Parte R.3)
+=====================================================
+Release: v1.0.0 - 2026-10-08T09:48:35Z
+Assets: sbom.cyclonedx.json, sbom.spdx.json
+
+Descarga en /tmp/verifica-release (como haria un cliente):
+- sbom.spdx.json sha256: 25ed99b837123712eb85414884953cc8996dbb67c774b8284d4eb114450a1fd6
+- sbom.cyclonedx.json sha256: f6c80654f58cc5580d2dfc7c55666caa36e49ccb9ff45aed885f6009581ed49b
+
+Procedencia firmada (Sigstore/SLSA, gh attestation verify):
+- sbom.spdx.json: exit=0 (0 = verificada)
+- sbom.cyclonedx.json: exit=0 (0 = verificada)
+Firmante esperado: workflow Publicar versión de Tonsete/reportaudit-lab.
+
+Contenido: 10 paquetes con version (mismo set que docs/evidencias/sbom.spdx.json de main).
+Conclusion: la v1.0.0 es instalable desde la Release y su SBOM verifica contra la procedencia firmada.
