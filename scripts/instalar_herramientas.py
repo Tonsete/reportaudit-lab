@@ -1,10 +1,10 @@
 """
-Instala Syft, Grype y Trivy en la carpeta tools/ del repositorio,
+Instala Syft, Grype, Trivy y Gitleaks en la carpeta tools/ del repositorio,
 VERIFICANDO la integridad de cada descarga antes de usarla.
 
 Uso, desde la raíz del repositorio (con cualquier Python 3.10+):
 
-    python scripts/instalar_herramientas.py            # instala las tres
+    python scripts/instalar_herramientas.py            # instala las cuatro
     python scripts/instalar_herramientas.py syft       # instala solo una
 
 Qué hace, paso a paso, para cada herramienta:
@@ -36,12 +36,14 @@ VERSIONES = {
     "syft": "1.52.0",
     "grype": "0.119.0",
     "trivy": "0.74.0",
+    "gitleaks": "8.30.1",
 }
 
 REPOSITORIOS = {
     "syft": "anchore/syft",
     "grype": "anchore/grype",
     "trivy": "aquasecurity/trivy",
+    "gitleaks": "gitleaks/gitleaks",
 }
 
 CARPETA_TOOLS = Path(__file__).resolve().parent.parent / "tools"
@@ -65,7 +67,7 @@ def detectar_plataforma():
 def nombre_del_archivo(herramienta, version, sistema, arquitectura):
     """Construye el nombre exacto del archivo publicado en GitHub Releases."""
     extension = "zip" if sistema == "windows" else "tar.gz"
-    if herramienta in ("syft", "grype"):
+    if herramienta in ("syft", "grype", "gitleaks"):
         if herramienta == "grype" and sistema == "windows" and arquitectura == "arm64":
             raise SystemExit("Grype no publica binario para Windows ARM64: usa WSL2 o GitHub Codespaces.")
         return f"{herramienta}_{version}_{sistema}_{arquitectura}.{extension}"
