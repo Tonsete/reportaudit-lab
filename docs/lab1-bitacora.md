@@ -133,6 +133,15 @@ Escribí `SECURITY.md` en la raíz: solo 1.0.x con soporte, reporte siempre por 
 
 ---
 
+## Parte R — Publicar la versión 1.0.0 con SBOM y procedencia firmada
+
+El workflow `publicar-version.yml` se dispara al empujar una etiqueta `v*`: instala Syft verificado, genera el SBOM de esa versión exacta, firma su procedencia (Sigstore/SLSA, 2 attestations) y publica la Release con el SBOM como asset.
+
+- Tag `v1.0.0` empujado desde `main`, Release creada por el propio workflow.
+- Verificación como cliente en `/tmp` (descarga del asset + `gh attestation verify`): ver `docs/evidencias/verificacion-release.txt`.
+
+---
+
 ## Preguntas de comprobación (Sección 7 de la guía)
 
 1. pendiente
