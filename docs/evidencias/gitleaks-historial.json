@@ -1,0 +1,50 @@
+[
+ {
+  "RuleID": "reportaudit-smtp-password",
+  "Description": "Hardcoded ReportAudit SMTP password",
+  "StartLine": 22,
+  "EndLine": 22,
+  "StartColumn": 2,
+  "EndColumn": 35,
+  "Match": "SMTP_PASSWORD = \"R3port2024!Audit\"",
+  "Secret": "SMTP_PASSWORD = \"R3port2024!Audit\"",
+  "File": "app/reporte_auditoria.py",
+  "SymlinkFile": "",
+  "Commit": "dae7e25cb772ed3d4b2a0d0b8e6374bc7e2e3e0e",
+  "Link": "https://github.com/Tonsete/reportaudit-lab/blob/dae7e25cb772ed3d4b2a0d0b8e6374bc7e2e3e0e/app/reporte_auditoria.py#L22",
+  "Entropy": 4.5358486,
+  "Author": "Antonio García",
+  "Email": "aagarciagallego2005@gmail.com",
+  "Date": "2026-09-28T18:15:19Z",
+  "Message": "chore: importar repositorio base de ReportAudit",
+  "Tags": [
+   "reportaudit",
+   "secret"
+  ],
+  "Fingerprint": "dae7e25cb772ed3d4b2a0d0b8e6374bc7e2e3e0e:app/reporte_auditoria.py:reportaudit-smtp-password:22"
+ },
+ {
+  "RuleID": "reportaudit-notification-api-key",
+  "Description": "Hardcoded ReportAudit notification API key",
+  "StartLine": 21,
+  "EndLine": 21,
+  "StartColumn": 2,
+  "EndColumn": 66,
+  "Match": "NOTIFICATION_API_KEY = \"Rq7Hx2Lm9Xc4Vb8Nz1Kd6Fs3Tg5Wy0Pj2Re4UaBt\"",
+  "Secret": "NOTIFICATION_API_KEY = \"Rq7Hx2Lm9Xc4Vb8Nz1Kd6Fs3Tg5Wy0Pj2Re4UaBt\"",
+  "File": "app/reporte_auditoria.py",
+  "SymlinkFile": "",
+  "Commit": "dae7e25cb772ed3d4b2a0d0b8e6374bc7e2e3e0e",
+  "Link": "https://github.com/Tonsete/reportaudit-lab/blob/dae7e25cb772ed3d4b2a0d0b8e6374bc7e2e3e0e/app/reporte_auditoria.py#L21",
+  "Entropy": 5.414525,
+  "Author": "Antonio García",
+  "Email": "aagarciagallego2005@gmail.com",
+  "Date": "2026-09-28T18:15:19Z",
+  "Message": "chore: importar repositorio base de ReportAudit",
+  "Tags": [
+   "reportaudit",
+   "secret"
+  ],
+  "Fingerprint": "dae7e25cb772ed3d4b2a0d0b8e6374bc7e2e3e0e:app/reporte_auditoria.py:reportaudit-notification-api-key:21"
+ }
+]
