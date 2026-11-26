@@ -63,9 +63,14 @@ jobs:
           python-version: "3.12"
 
       - name: Auditar dependencias con pip-audit
-        run: |
-          python -m pip install pip-audit
-          pip-audit -r requirements.txt --desc
+        # Audita las versiones EXACTAS del lockfile (directas y transitivas)
+        # sin instalarlas ni resolverlas: si no, un lockfile incoherente hace
+        # fallar el job por un conflicto de pip y no por una vulnerabilidad.
+        uses: pypa/gh-action-pip-audit@v1.1.0
+        with:
+          inputs: requirements.txt
+          no-deps: true
+          disable-pip: true
 
   secretos-gitleaks:
     name: Secretos - Gitleaks
