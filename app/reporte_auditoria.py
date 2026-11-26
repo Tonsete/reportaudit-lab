@@ -23,10 +23,13 @@ SMTP_PASSWORD = os.getenv("REPORTAUDIT_SMTP_PASSWORD")
 
 RUTA_DB = os.path.join(os.path.dirname(__file__), "..", "reportes.db")
 
-# Lista blanca de nombres de reporte: letras, números, _ . - y extensión .html.
-# No puede empezar por "-" (wkhtmltopdf lo leería como una opción) ni contener
-# "/" ni espacios: solo nombres de archivo de la carpeta de reportes.
-NOMBRE_HTML_VALIDO = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]*\.html")
+# Lista blanca de nombres de reporte: letras ASCII, números, _ y -, como mucho
+# 100 caracteres, y la extensión .html. No puede empezar por "-" (wkhtmltopdf
+# lo leería como una opción) ni contener "/", espacios ni más puntos.
+# Sin el punto dentro de la clase no hay ambigüedad con "\.html", así que la
+# expresión no puede degenerar en backtracking polinómico (ReDoS, CodeQL
+# py/polynomial-redos).
+NOMBRE_HTML_VALIDO = re.compile(r"\w[\w-]{0,99}\.html", re.ASCII)
 
 
 def cargar_configuracion(ruta_config):
