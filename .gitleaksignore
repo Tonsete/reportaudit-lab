@@ -1,0 +1,8 @@
+# Credenciales de práctica expuestas en el commit de importación (dae7e25) y en el
+# informe sin redactar de la Parte O (621171c). Rotadas en la Parte M: ya no sirven.
+621171c0e1b6c6e8c54608698195360374af58c9:docs/evidencias/gitleaks-historial.json:reportaudit-notification-api-key:33
+621171c0e1b6c6e8c54608698195360374af58c9:docs/evidencias/gitleaks-historial.json:reportaudit-notification-api-key:34
+621171c0e1b6c6e8c54608698195360374af58c9:docs/evidencias/gitleaks-historial.json:reportaudit-smtp-password:9
+621171c0e1b6c6e8c54608698195360374af58c9:docs/evidencias/gitleaks-historial.json:reportaudit-smtp-password:10
+dae7e25cb772ed3d4b2a0d0b8e6374bc7e2e3e0e:app/reporte_auditoria.py:reportaudit-smtp-password:22
+dae7e25cb772ed3d4b2a0d0b8e6374bc7e2e3e0e:app/reporte_auditoria.py:reportaudit-notification-api-key:21
