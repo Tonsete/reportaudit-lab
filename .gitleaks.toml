@@ -2,6 +2,8 @@
 # Extienden las reglas por defecto: lo que ya detecta generic-api-key
 # sigue detectándose, y añadimos lo que se le escapa (el SMTP de práctica,
 # que al ser corto y poco entrópico no lo marca ninguna regla genérica).
+# Las reglas aceptan también comillas escapadas (\") para detectar la
+# credencial dentro de informes JSON, y descartan los valores REDACTED.
 
 [extend]
 useDefault = true
@@ -10,12 +12,22 @@ useDefault = true
 [[rules]]
 id = "reportaudit-notification-api-key"
 description = "Hardcoded ReportAudit notification API key"
-regex = '''NOTIFICATION_API_KEY\s*=\s*["'][^"']{8,}["']'''
+regex = '''NOTIFICATION_API_KEY\s*=\s*\\?["']([^"'\\\r\n]{8,})\\?["']'''
+secretGroup = 1
+keywords = ["notification_api_key"]
 tags = ["reportaudit", "secret"]
 
 # La contraseña SMTP hardcodeada tal como venía heredada (ya rotada).
 [[rules]]
 id = "reportaudit-smtp-password"
 description = "Hardcoded ReportAudit SMTP password"
-regex = '''SMTP_PASSWORD\s*=\s*["'][^"']{4,}["']'''
+regex = '''SMTP_PASSWORD\s*=\s*\\?["']([^"'\\\r\n]{4,})\\?["']'''
+secretGroup = 1
+keywords = ["smtp_password"]
 tags = ["reportaudit", "secret"]
+
+# Los informes generados con --redact contienen el texto REDACTED en lugar
+# del valor: no es un secreto.
+[allowlist]
+description = "Valores ya ocultados por gitleaks --redact"
+regexes = ['''^REDACTED$''']
