@@ -1,50 +1,73 @@
-# Publicación de versiones de ReportAudit.
-# Al empujar una etiqueta v* se genera el SBOM de esa versión exacta,
-# se firma su procedencia (Sigstore/SLSA) y se publica la Release con el
-# SBOM como asset. Así un cliente puede verificar qué instaló y de dónde salió.
-name: Publicar versión
+# Publicación de versiones de ReportAudit (Parte R, guía v1.3).
+# Al empujar una etiqueta vX.Y.Z: SBOM CycloneDX, paquete del código fuente,
+# huellas SHA-256 y dos atestaciones Sigstore (procedencia SLSA y SBOM).
+name: Publicar versión firmada
 
 on:
   push:
-    tags: ["v*"]
+    tags: ["v*.*.*"]
 
-# Mínimo privilegio: lectura por defecto; la escritura solo donde se publica.
 permissions:
   contents: read
 
 jobs:
-  publicar:
-    name: Release con SBOM y procedencia firmada
+  release:
+    name: Release - SBOM y procedencia
     runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
       attestations: write
+    env:
+      VERSION: ${{ github.ref_name }}
     steps:
       - name: Descargar el código de la etiqueta
         uses: actions/checkout@v7
 
-      - name: Instalar Syft verificado
-        run: python3 scripts/instalar_herramientas.py syft
-
-      - name: Generar el SBOM de la versión
-        run: ./tools/syft scan requirements.txt -o spdx-json=sbom.spdx.json -o cyclonedx-json=sbom.cyclonedx.json
-
-      - name: Firmar la procedencia del SBOM SPDX
-        uses: actions/attest-build-provenance@v4.2.2
+      - name: Generar el SBOM (CycloneDX) antes de empaquetar
+        uses: anchore/sbom-action@v0.24.3
         with:
-          subject-path: sbom.spdx.json
+          path: .
+          format: cyclonedx-json
+          output-file: reportaudit-sbom.cdx.json
+          upload-artifact: false
+          upload-release-assets: false
 
-      - name: Firmar la procedencia del SBOM CycloneDX
-        uses: actions/attest-build-provenance@v4.2.2
-        with:
-          subject-path: sbom.cyclonedx.json
-
-      - name: Publicar la Release con el SBOM
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Empaquetar el código fuente de la versión
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            --title "ReportAudit ${GITHUB_REF_NAME}" \
-            --notes "Release ${GITHUB_REF_NAME}: SBOM firmado y procedencia SLSA adjuntos." \
-            sbom.spdx.json sbom.cyclonedx.json
+          mkdir -p dist
+          mv reportaudit-sbom.cdx.json dist/
+          git archive --format=tar.gz --prefix="reportaudit-${VERSION#v}/" \
+            -o "dist/reportaudit-${VERSION#v}.tar.gz" HEAD
+
+      - name: Calcular las huellas SHA-256
+        run: |
+          cd dist
+          sha256sum reportaudit-*.tar.gz reportaudit-sbom.cdx.json > SHA256SUMS
+
+      - name: Atestar la procedencia (SLSA)
+        id: procedencia
+        uses: actions/attest@v4
+        with:
+          subject-path: dist/reportaudit-*.tar.gz
+
+      - name: Atestar el SBOM
+        id: sbom
+        uses: actions/attest@v4
+        with:
+          subject-path: dist/reportaudit-*.tar.gz
+          sbom-path: dist/reportaudit-sbom.cdx.json
+
+      - name: Guardar las firmas junto a la versión
+        run: |
+          cp "${{ steps.procedencia.outputs.bundle-path }}" dist/reportaudit-provenance.sigstore.json
+          cp "${{ steps.sbom.outputs.bundle-path }}" dist/reportaudit-sbom.sigstore.json
+
+      - name: Crear la Release en GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$VERSION" dist/* \
+            --title "ReportAudit $VERSION" \
+            --notes "SBOM (CycloneDX), SHA-256 checksums and Sigstore attestations included. See SECURITY.md to verify." \
+            --verify-tag
